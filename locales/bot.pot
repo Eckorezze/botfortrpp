@@ -1,0 +1,426 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-12-06 17:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: main.py:29
+msgid "I'm stopped!"
+msgstr ""
+
+#: main.py:33
+msgid "I'm launched!"
+msgstr ""
+
+#: handlers/admin.py:56 handlers/admin.py:106 handlers/admin.py:201
+#: handlers/admin.py:311 handlers/admin.py:347 handlers/users.py:81
+#: keyboards/keyboards.py:111
+msgid "↩️Cancel"
+msgstr ""
+
+#: handlers/admin.py:85
+msgid "Search user by:"
+msgstr ""
+
+#: handlers/admin.py:92
+msgid "Type user {search}:"
+msgstr ""
+
+#: handlers/admin.py:147
+msgid "Enter in Conversation"
+msgstr ""
+
+#: handlers/admin.py:148
+msgid "Write as a bot"
+msgstr ""
+
+#: handlers/admin.py:149
+msgid "❌Ban"
+msgstr ""
+
+#: handlers/admin.py:150
+msgid "✅Unban"
+msgstr ""
+
+#: handlers/admin.py:151 handlers/tasks.py:64 keyboards/keyboards.py:138
+msgid "🔙Back"
+msgstr ""
+
+#: handlers/admin.py:180
+msgid "User not found!"
+msgstr ""
+
+#: handlers/admin.py:190
+msgid "Enter ban reason:"
+msgstr ""
+
+#: handlers/admin.py:202 handlers/admin.py:312 handlers/admin.py:348
+#: handlers/users.py:83
+msgid "Action canceled!"
+msgstr ""
+
+#: handlers/admin.py:302
+msgid "Please type your answer:"
+msgstr ""
+
+#: handlers/admin.py:322
+msgid ""
+"Your message *{message_id}* was seen!\n"
+"*Answer:* `{answer}`"
+msgstr ""
+
+#: handlers/admin.py:324
+msgid "Your answer sent!"
+msgstr ""
+
+#: handlers/admin.py:328 handlers/admin.py:367
+msgid "Something went wrong, see log for more information!"
+msgstr ""
+
+#: handlers/admin.py:338
+msgid "Please type message:"
+msgstr ""
+
+#: handlers/admin.py:358 handlers/admin.py:362
+msgid "Your message sent!"
+msgstr ""
+
+#: handlers/entertaiment.py:13
+msgid "Hi, this is the entertainment section!"
+msgstr ""
+
+#: handlers/entertaiment.py:74
+msgid "The dice rolled *{dice_result}*"
+msgstr ""
+
+#: handlers/qr_code.py:27
+msgid "Choose the type of QR code:"
+msgstr ""
+
+#: handlers/qr_code.py:34 handlers/qr_code.py:50 handlers/qr_code.py:62
+#: handlers/qr_code.py:74 handlers/qr_code.py:86 handlers/random_gen.py:28
+#: handlers/random_gen.py:87 handlers/weather.py:45 keyboards/keyboards.py:15
+#: keyboards/keyboards.py:57 keyboards/keyboards.py:67
+#: keyboards/keyboards.py:80 keyboards/keyboards.py:89
+#: keyboards/keyboards.py:102
+msgid "📂Menu"
+msgstr ""
+
+#: handlers/qr_code.py:39 handlers/qr_code.py:126 keyboards/keyboards.py:13
+msgid "Simple QR code"
+msgstr ""
+
+#: handlers/qr_code.py:40
+msgid "Enter URL:"
+msgstr ""
+
+#: handlers/qr_code.py:42 handlers/qr_code.py:132 keyboards/keyboards.py:14
+msgid "Wi-Fi QR-code"
+msgstr ""
+
+#: handlers/qr_code.py:43
+msgid "Enter the Wi-Fi network name:"
+msgstr ""
+
+#: handlers/qr_code.py:55
+msgid "Enter Wi-Fi password:"
+msgstr ""
+
+#: handlers/qr_code.py:67 handlers/qr_code.py:79 handlers/qr_code.py:112
+msgid "Select the color of the QR code."
+msgstr ""
+
+#: handlers/qr_code.py:95
+msgid "Now choose a background color."
+msgstr ""
+
+#: handlers/qr_code.py:111
+msgid "You can't choose the same color twice! Choose the colors again."
+msgstr ""
+
+#: handlers/qr_code.py:143
+msgid "Scan the QR code"
+msgstr ""
+
+#: handlers/random_gen.py:22
+msgid "Please enter password length: "
+msgstr ""
+
+#: handlers/random_gen.py:36
+msgid "Password can't be greater than 64 symbols"
+msgstr ""
+
+#: handlers/random_gen.py:41 handlers/random_gen.py:106
+msgid "Please enter correct numbers: "
+msgstr ""
+
+#: handlers/random_gen.py:69
+msgid ""
+"Here are your password:\n"
+"\n"
+" `{password}`"
+msgstr ""
+
+#: handlers/random_gen.py:73
+msgid "Please enter a number: "
+msgstr ""
+
+#: handlers/random_gen.py:80
+msgid "Hi enter range of numbers by -, or select one from examples."
+msgstr ""
+
+#: handlers/random_gen.py:103
+msgid "Your number is `{number}`"
+msgstr ""
+
+#: handlers/tasks.py:21
+msgid ""
+"*Your tasks:*\n"
+"\n"
+msgstr ""
+
+#: handlers/tasks.py:33 handlers/tasks.py:39
+msgid "➕Add task"
+msgstr ""
+
+#: handlers/tasks.py:42
+msgid "You haven't tasks."
+msgstr ""
+
+#: handlers/tasks.py:50
+msgid "Hi, here are your tasks!"
+msgstr ""
+
+#: handlers/tasks.py:63
+msgid "❌Delete"
+msgstr ""
+
+#: handlers/tasks.py:76
+msgid "Enter your task:"
+msgstr ""
+
+#: handlers/tasks.py:91
+msgid "Task deleted."
+msgstr ""
+
+#: handlers/tasks.py:114
+msgid "Task added."
+msgstr ""
+
+#: handlers/users.py:29
+msgid "Hi! I'm your bot."
+msgstr ""
+
+#: handlers/users.py:49
+msgid "Please choose your language!"
+msgstr ""
+
+#: handlers/users.py:68
+msgid "Please enter your message:"
+msgstr ""
+
+#: handlers/users.py:101
+msgid "Your message *{feedback_message_id}* sent!"
+msgstr ""
+
+#: handlers/weather.py:29
+msgid "Please share your location"
+msgstr ""
+
+#: handlers/weather.py:38
+msgid "What do you want to get?"
+msgstr ""
+
+#: handlers/weather.py:59 keyboards/keyboards.py:65
+msgid "Current weather"
+msgstr ""
+
+#: handlers/weather.py:68
+#, python-format
+msgid ""
+"<b>Location: %s</b>\n"
+"Weather: %s\n"
+"Weather description: %s\n"
+"Temperature: %s°C"
+msgstr ""
+
+#: handlers/weather.py:73 handlers/weather.py:97
+msgid "Something went wrong, try again, please"
+msgstr ""
+
+#: handlers/weather.py:76 keyboards/keyboards.py:66
+msgid "Forecast for tomorrow"
+msgstr ""
+
+#: handlers/weather.py:91
+#, python-format
+msgid ""
+"<b>Forecast for %s</b>\n"
+"<i>Location: %s</i>\n"
+"Weather: %s\n"
+"Weather Description: %s\n"
+"Temperature: %s°C"
+msgstr ""
+
+#: keyboards/keyboards.py:23
+msgid "QR code"
+msgstr ""
+
+#: keyboards/keyboards.py:24
+msgid "🌦Weather"
+msgstr ""
+
+#: keyboards/keyboards.py:25
+msgid "🎯Tasks"
+msgstr ""
+
+#: keyboards/keyboards.py:26
+msgid "🔐Generate password"
+msgstr ""
+
+#: keyboards/keyboards.py:27
+msgid "🔢Random number"
+msgstr ""
+
+#: keyboards/keyboards.py:28
+msgid "🎮Entertainments"
+msgstr ""
+
+#: keyboards/keyboards.py:29
+msgid "ℹ️INFO"
+msgstr ""
+
+#: keyboards/keyboards.py:56
+msgid "📍Set your location"
+msgstr ""
+
+#: keyboards/keyboards.py:96
+msgid "Bowling🎳"
+msgstr ""
+
+#: keyboards/keyboards.py:97
+msgid "Darts🎯"
+msgstr ""
+
+#: keyboards/keyboards.py:98
+msgid "Dice🎲"
+msgstr ""
+
+#: keyboards/keyboards.py:99
+msgid "Basketball🏀"
+msgstr ""
+
+#: keyboards/keyboards.py:100
+msgid "Casino🎰"
+msgstr ""
+
+#: keyboards/keyboards.py:101
+msgid "Football⚽"
+msgstr ""
+
+#: keyboards/keyboards.py:119
+msgid "💬Mailing"
+msgstr ""
+
+#: keyboards/keyboards.py:120
+msgid "👤Control User"
+msgstr ""
+
+#: keyboards/keyboards.py:145
+msgid "Feedback💬"
+msgstr ""
+
+#: keyboards/keyboards.py:152
+msgid "Answer💬"
+msgstr ""
+
+#: messages/bot_messages.py:18
+msgid ""
+"🤖This bot with various functions as a TRPP project, here is a list of available functions:\n"
+"\n"
+"️/start - start interaction with the bot\n"
+"QR code - generate a QR code\n"
+"🔢Random number - generate a random number\n"
+"🔐Generate password - generate a random password\n"
+"🎯Tasks - create and schedule tasks\n"
+"🌦Weather - view the weather\n"
+"🎮Entertainments - the entertainment section\n"
+"*If you want to ask a question, click the Feedback💬 "
+"button!*"
+msgstr ""
+
+#: messages/bot_messages.py:33
+msgid ""
+"Hello, this is the admin panel.\n"
+"🪪Number of bot users: *{user_count}*\n"
+"\n"
+"Admin commands:\n"
+"/get\\_users - download table with all users info"
+msgstr ""
+
+#: messages/bot_messages.py:41
+msgid ""
+"*USER INFO*\n"
+"_Name_: *{user_name}*\n"
+"_ID_: *{user_id}*\n"
+"_Username_: *{user_username}*\n"
+"_Status_: *{status}*"
+msgstr ""
+
+#: messages/bot_messages.py:49
+msgid "Mailing is complete!"
+msgstr ""
+
+#: messages/bot_messages.py:53
+msgid "Starting mailing..."
+msgstr ""
+
+#: messages/bot_messages.py:57
+msgid "Enter the message to send:"
+msgstr ""
+
+#: messages/bot_messages.py:61
+msgid "This command cannot be used in a group!"
+msgstr ""
+
+#: messages/bot_messages.py:65
+msgid "Action canceled"
+msgstr ""
+
+#: messages/bot_messages.py:69
+msgid ""
+"🚫You have been banned, contact @eckorezze for more information!\n"
+"Reason: {reason}"
+msgstr ""
+
+#: messages/bot_messages.py:73
+msgid "🎉You have been unbanned!"
+msgstr ""
+
+#: messages/bot_messages.py:77
+msgid "User {banned_user_id} successfully banned!"
+msgstr ""
+
+#: messages/bot_messages.py:81
+msgid "User {unbanned_user_id} successfully unbanned!"
+msgstr ""
+
+#: messages/bot_messages.py:85
+msgid ""
+"*New message* from user: *{user}*\n"
+"*Message:* `{feedback_message}`"
+msgstr ""
+
