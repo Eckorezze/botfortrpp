@@ -80,7 +80,6 @@ async def fg_color(message: types.Message, state: FSMContext):
     await GenerateQRCode.waiting_for_bg_color.set()
     await state.update_data(url=url)
 
-
 @dp.message_handler(state=[GenerateQRCode.waiting_for_bg_color, GenerateQRCode.waiting_for_generate])
 async def menu_handler(message: types.Message, state: FSMContext):
     if message.text == _('📂Menu'):

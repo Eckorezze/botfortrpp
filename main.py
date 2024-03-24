@@ -6,7 +6,6 @@ from aiogram.utils import executor
 import config
 from middlewares import setup_lang_middleware, setup_ban_middlewares, setup_throttling_middlewares
 from services import DataBase
-
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("werkzeug").disabled = True
 parse_mode = "MarkdownV2"
@@ -16,14 +15,11 @@ dp = Dispatcher(bot, storage=storage)
 i18n = setup_lang_middleware(dp)
 _ = i18n.gettext
 db = DataBase()
-
-
 async def on_shutdown(dp):
-    await bot.send_message(config.admin_id, _("I'm stopped\!"))
-
+    await bot.send_message(config.admin_id, _("I'm stopped"))
 
 async def on_startup(dp):
-    await bot.send_message(config.admin_id, _("I'm launched\!"))
+    await bot.send_message(config.admin_id, _("I'm launched"))
     await db.user_count()
 
 
@@ -36,8 +32,6 @@ async def update_info(message: types.Message):
         await db.user_update_name(user_id, user_name, user_username)
     else:
         await db.add_users(user_id, user_name, user_username)
-
-
 if __name__ == '__main__':
     from handlers.admin import dp
     from handlers.users import dp
@@ -46,7 +40,6 @@ if __name__ == '__main__':
     from handlers.random_gen import dp
     from handlers.tasks import dp
     from handlers.entertaiment import dp
-
     setup_throttling_middlewares(dp)
     setup_ban_middlewares(dp)
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup, on_shutdown=on_shutdown)

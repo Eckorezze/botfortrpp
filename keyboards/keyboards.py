@@ -4,14 +4,14 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from main import _
 
 lang_keyboard = InlineKeyboardMarkup()
-lang_keyboard.add(InlineKeyboardButton(text="Русский", callback_data="lang_ru"),
-                  InlineKeyboardButton(text="English", callback_data="lang_en"))
+lang_keyboard.add(InlineKeyboardButton(text="РусскийRU", callback_data="lang_ru"),
+                  InlineKeyboardButton(text="English🇬🇧", callback_data="lang_en"))
 
 
 def return_qr_type_keyboard():
     qr_type_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     simple_qr_button = types.KeyboardButton(_("Simple QR code"))
-    wifi_qr_button = types.KeyboardButton(_("Wi\-Fi QR-code"))
+    wifi_qr_button = types.KeyboardButton(_("Wi-Fi QR-code"))
     menu_button = types.KeyboardButton(_('📂Menu'))
     qr_type_keyboard.row(simple_qr_button, wifi_qr_button)
     qr_type_keyboard.row(menu_button)
