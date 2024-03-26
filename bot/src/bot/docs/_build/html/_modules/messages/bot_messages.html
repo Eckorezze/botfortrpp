@@ -1,0 +1,198 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages.bot_messages &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.bot_messages</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код messages.bot_messages</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">_</span>
+
+
+<div class="viewcode-block" id="choose_lan">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.choose_lan">[документация]</a>
+<span class="k">def</span> <span class="nf">choose_lan</span><span class="p">(</span><span class="n">language</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;ru&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;Вы выбрали русский язык!</span>
+<span class="s2">Вы всегда можете изменить язык написав / language</span>
+<span class="s2">Теперь снова нажмите / start</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;en&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;You have selected English!</span>
+<span class="s2">You can always change the language by writing /language</span>
+<span class="s2">Now click /start again</span>
+<span class="s2">&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="send_info">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.send_info">[документация]</a>
+<span class="k">def</span> <span class="nf">send_info</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;🤖This bot with various functions acts as a TRPP project, Here is a list of available functions:</span>
+
+<span class="s2">️/start - start interaction with the bot</span>
+<span class="s2">QR code - generate a QR code</span>
+<span class="s2">🔢Random number - generate a random number</span>
+<span class="s2">🔐Generate password - generate a random password</span>
+<span class="s2">🎯Tasks - create and schedule tasks</span>
+<span class="s2">🌦Weather - view the weather</span>
+<span class="s2">🎮Entertainments - the entertainment section</span>
+
+<span class="s2">*If you want to make an offer or ask a question, click the Feedback💬 button!*&quot;&quot;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="admin_panel">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.admin_panel">[документация]</a>
+<span class="k">def</span> <span class="nf">admin_panel</span><span class="p">(</span><span class="n">user_count</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Hello, this is the admin panel.</span>
+<span class="s2">🪪Number of bot users: *</span><span class="si">{user_count}</span><span class="s2">*</span>
+
+<span class="s2">Admin commands:</span>
+<span class="s2">/get\_users - download table with all users info&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_count</span><span class="o">=</span><span class="n">user_count</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="return_user_info">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.return_user_info">[документация]</a>
+<span class="k">def</span> <span class="nf">return_user_info</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">user_username</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;*USER INFO*</span>
+<span class="s2">_Name_: *</span><span class="si">{user_name}</span><span class="s2">*</span>
+<span class="s2">_ID_: *</span><span class="si">{user_id}</span><span class="s2">*</span>
+<span class="s2">_Username_: *</span><span class="si">{user_username}</span><span class="s2">*</span>
+<span class="s2">_Status_: *</span><span class="si">{status}</span><span class="s2">*&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user_name</span><span class="o">=</span><span class="n">user_name</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_username</span><span class="o">=</span><span class="n">user_username</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="finish_mailing">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.finish_mailing">[документация]</a>
+<span class="k">def</span> <span class="nf">finish_mailing</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Mailing is complete!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="start_mailing">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.start_mailing">[документация]</a>
+<span class="k">def</span> <span class="nf">start_mailing</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Starting mailing...&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="mailing_message">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.mailing_message">[документация]</a>
+<span class="k">def</span> <span class="nf">mailing_message</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Enter the message to send:&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="not_groups">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.not_groups">[документация]</a>
+<span class="k">def</span> <span class="nf">not_groups</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;This command cannot be used in a group!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="canceled">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.canceled">[документация]</a>
+<span class="k">def</span> <span class="nf">canceled</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Action canceled&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ban_message">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.ban_message">[документация]</a>
+<span class="k">def</span> <span class="nf">ban_message</span><span class="p">(</span><span class="n">reason</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;🚫You have been banned, contact @mak5er for more information!</span><span class="se">\n</span><span class="s2">Reason: </span><span class="si">{reason}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="unban_message">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.unban_message">[документация]</a>
+<span class="k">def</span> <span class="nf">unban_message</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;🎉You have been unbanned!&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="successful_ban">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.successful_ban">[документация]</a>
+<span class="k">def</span> <span class="nf">successful_ban</span><span class="p">(</span><span class="n">banned_user_id</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">{banned_user_id}</span><span class="s2"> successfully banned!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">banned_user_id</span><span class="o">=</span><span class="n">banned_user_id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="successful_unban">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.successful_unban">[документация]</a>
+<span class="k">def</span> <span class="nf">successful_unban</span><span class="p">(</span><span class="n">unbanned_user_id</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">{unbanned_user_id}</span><span class="s2"> successfully unbanned!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unbanned_user_id</span><span class="o">=</span><span class="n">unbanned_user_id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="feedback_message_send">
+<a class="viewcode-back" href="../../messages.html#messages.bot_messages.feedback_message_send">[документация]</a>
+<span class="k">def</span> <span class="nf">feedback_message_send</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">feedback_message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;*New message* from user: *</span><span class="si">{user}</span><span class="s2">*</span><span class="se">\n</span><span class="s2">*Message:* `</span><span class="si">{feedback_message}</span><span class="s2">`&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+                                                                                          <span class="n">feedback_message</span><span class="o">=</span><span class="n">feedback_message</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.bot_messages</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

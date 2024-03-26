@@ -1,0 +1,263 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.tasks &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.tasks</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.tasks</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher.filters.state</span> <span class="kn">import</span> <span class="n">StatesGroup</span><span class="p">,</span> <span class="n">State</span>
+
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">bot</span><span class="p">,</span> <span class="n">dp</span><span class="p">,</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">DataBase</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DataBase</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Notes">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.Notes">[документация]</a>
+<span class="k">class</span> <span class="nc">Notes</span><span class="p">(</span><span class="n">StatesGroup</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Определяет состояния для работы с заметками.</span>
+<span class="sd">    </span>
+<span class="sd">    Состояния:</span>
+<span class="sd">    - add_note: Состояние для добавления новой заметки.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">add_note</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="return_notes">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.return_notes">[документация]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">return_notes</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Отправляет пользователю список его заметок.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя.</span>
+<span class="sd">    - user_id (int): Уникальный идентификатор пользователя.</span>
+
+<span class="sd">    Если у пользователя есть заметки, отправляет их список вместе с кнопками управления.</span>
+<span class="sd">    В противном случае сообщает, что заметок нет, предлагая добавить новую.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">notes</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_notes</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">notes</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;*Your tasks:*</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">notes_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">notes</span><span class="p">:</span>
+            <span class="n">note_text</span> <span class="o">=</span> <span class="n">note</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="mi">30</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">note</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="k">else</span> <span class="n">note</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">response</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> - _</span><span class="si">{</span><span class="n">note_text</span><span class="si">}</span><span class="s2">_</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">note_text_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">note_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;manage_note:</span><span class="si">{</span><span class="n">note</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">notes_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">note_text_button</span><span class="p">)</span>
+
+        <span class="n">add_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;➕Add task&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;add_note&quot;</span><span class="p">)</span>
+        <span class="n">notes_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">add_button</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">notes_keyboard</span><span class="p">,</span>
+                               <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;➕Add task&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;add_note&quot;</span><span class="p">)</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You haven&#39;t tasks\.&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">keyboard</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="list_notes">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.list_notes">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;🎯Tasks&#39;</span><span class="p">,</span> <span class="s1">&#39;🎯Задачи&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">list_notes</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает команду для просмотра списка заметок.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с запросом на просмотр заметок.</span>
+
+<span class="sd">    Отвечает пользователю приветствием и вызывает функцию для отображения списка его заметок.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Hi, here are your tasks\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_menu_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">return_notes</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="manage_note_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.manage_note_callback">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;manage_note:&#39;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">manage_note_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает нажатие на кнопку управления заметкой.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - call (types.CallbackQuery): Callback запрос от кнопки управления заметкой.</span>
+
+<span class="sd">    В зависимости от выбора пользователя, может удалить заметку или вернуться к списку заметок.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">note_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">note</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_note</span><span class="p">(</span><span class="n">note_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">note</span><span class="p">:</span>
+        <span class="n">keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+        <span class="n">delete_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;❌Delete&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;delete_note:</span><span class="si">{</span><span class="n">note_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">back_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🔙Back&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;back_to_list&quot;</span><span class="p">)</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">delete_button</span><span class="p">)</span>
+        <span class="n">keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">back_button</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">edit_message_text</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">note</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="n">reply_markup</span><span class="o">=</span><span class="n">keyboard</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_note_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.add_note_callback">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;add_note&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_note_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+    
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">edit_message_text</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
+                                <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Enter your task:&quot;</span><span class="p">))</span>
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">answer_callback_query</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">Notes</span><span class="o">.</span><span class="n">add_note</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="delete_note_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.delete_note_callback">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;delete_note:&#39;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">delete_note_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+    <span class="n">note_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">delete_note</span><span class="p">(</span><span class="n">note_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">edit_message_text</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
+                                <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Task deleted\.&quot;</span><span class="p">))</span>
+    <span class="k">await</span> <span class="n">return_notes</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">answer_callback_query</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="back_to_list_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.back_to_list_callback">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;back_to_list&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">back_to_list_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">return_notes</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">answer_callback_query</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_note_message">
+<a class="viewcode-back" href="../../handlers.html#handlers.tasks.add_note_message">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">Notes</span><span class="o">.</span><span class="n">add_note</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_note_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает сообщение от пользователя при добавлении новой заметки.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с текстом заметки.</span>
+<span class="sd">    - state (FSMContext): Контекст конечного автомата для управления состояниями.</span>
+
+<span class="sd">    Добавляет новую заметку в базу данных и отправляет пользователю уведомление об успешном добавлении.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">note_text</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">add_note</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">note_text</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Task added\.&quot;</span><span class="p">))</span>
+    <span class="k">await</span> <span class="n">return_notes</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.tasks</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

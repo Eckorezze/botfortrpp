@@ -1,0 +1,221 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.weather &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.weather</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.weather</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher.filters.state</span> <span class="kn">import</span> <span class="n">State</span><span class="p">,</span> <span class="n">StatesGroup</span>
+
+<span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">users</span> <span class="k">as</span> <span class="n">hu</span>
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">bot</span><span class="p">,</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">DataBase</span>
+
+<span class="n">WEATHER_API_KEY</span> <span class="o">=</span> <span class="s2">&quot;5a790b0dd84fd7bf42f2b82544390aa9&quot;</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DataBase</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Weather">
+<a class="viewcode-back" href="../../handlers.html#handlers.weather.Weather">[документация]</a>
+<span class="k">class</span> <span class="nc">Weather</span><span class="p">(</span><span class="n">StatesGroup</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Определяет состояния для получения погоды или прогноза.</span>
+
+<span class="sd">    Состояния:</span>
+<span class="sd">    - get_location: Состояние для получения местоположения пользователя.</span>
+<span class="sd">    - weather_or_forecast: Состояние для выбора между текущей погодой и прогнозом.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">get_location</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">weather_or_forecast</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_url_type">
+<a class="viewcode-back" href="../../handlers.html#handlers.weather.get_url_type">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;🌦Weather&quot;</span><span class="p">,</span> <span class="s2">&quot;🌦Погода&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_url_type</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает местоположение пользователя для предоставления погоды.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please share your location&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_location_keyboard</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="send_location">
+<a class="viewcode-back" href="../../handlers.html#handlers.weather.send_location">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">content_types</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">send_location</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает получение местоположения от пользователя.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с местоположением.</span>
+<span class="sd">    - state (FSMContext): Контекст состояния для хранения информации между шагами.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">message_str</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">location</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message_str</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;What do you want to get?&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_weather_or_forecast_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">Weather</span><span class="o">.</span><span class="n">weather_or_forecast</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">message_str</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="send_weather">
+<a class="viewcode-back" href="../../handlers.html#handlers.weather.send_weather">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">Weather</span><span class="o">.</span><span class="n">weather_or_forecast</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">send_weather</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает выбор пользователя между получением текущей погоды или прогноза.</span>
+
+<span class="sd">    Использует OpenWeatherMap API для получения данных и отправляет их пользователю.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с выбором типа погоды.</span>
+<span class="sd">    - state (FSMContext): Контекст состояния с сохраненным местоположением пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">language</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_language</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span>
+
+    <span class="n">wait_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Current weather&#39;</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;http://api.openweathermap.org/data/2.5/weather?lat=%f&amp;lon=%f&amp;lang=</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s1">&amp;appid=%s&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">location</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">WEATHER_API_KEY</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">weather_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+            <span class="n">weather_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">weather_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">temperature</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">][</span><span class="s1">&#39;temp&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                   <span class="n">_</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;Location: </span><span class="si">%s</span><span class="s1">&lt;/b&gt;</span><span class="se">\n</span><span class="s1">Weather: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">Weather description: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">Temperature: </span><span class="si">%s</span><span class="s1">°C&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span>
+                                       <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;weather&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;main&#39;</span><span class="p">],</span>
+                                       <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;weather&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="n">temperature</span><span class="p">),</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;html&#39;</span><span class="p">,</span>
+                                   <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Something went wrong, try again, please&#39;</span><span class="p">),</span>
+                                   <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+
+    <span class="k">elif</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Forecast for tomorrow&#39;</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;http://api.openweathermap.org/data/2.5/forecast?lat=%f&amp;lon=%f&amp;cnt=10&amp;lang=</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s1">&amp;appid=%s&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">location</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">WEATHER_API_KEY</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">weather_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+            <span class="n">weather_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">weather_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">temperature</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="s1">&#39;main&#39;</span><span class="p">][</span><span class="s1">&#39;temp&#39;</span><span class="p">])</span> <span class="o">-</span> <span class="mf">273.15</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">weather</span> <span class="o">=</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="s1">&#39;weather&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;main&#39;</span><span class="p">]</span>
+            <span class="n">weather_description</span> <span class="o">=</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="s1">&#39;weather&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">][</span><span class="s1">&#39;country&#39;</span><span class="p">]</span>
+            <span class="n">forecast_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="s1">&#39;dt_txt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%m-%Y&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">weather_data</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">][</span><span class="s1">&#39;dt_txt&#39;</span><span class="p">][</span><span class="mi">10</span><span class="p">:]</span>
+            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                   <span class="n">_</span><span class="p">(</span><span class="s1">&#39;&lt;b&gt;Forecast for </span><span class="si">%s</span><span class="s1">&lt;/b&gt;</span><span class="se">\n</span><span class="s1">&lt;i&gt;Location: </span><span class="si">%s</span><span class="s1">&lt;/i&gt;</span><span class="se">\n</span><span class="s1">Weather: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">Weather Description: &#39;</span>
+                                     <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">Temperature: </span><span class="si">%s</span><span class="s1">°C&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span>
+                                       <span class="n">forecast_time</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">weather</span><span class="p">,</span> <span class="n">weather_description</span><span class="p">,</span> <span class="n">temperature</span><span class="p">),</span>
+                                   <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Something went wrong, try again, please&#39;</span><span class="p">),</span>
+                                   <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">wait_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.weather</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

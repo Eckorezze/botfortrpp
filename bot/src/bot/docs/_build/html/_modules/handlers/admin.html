@@ -1,0 +1,589 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.admin &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.admin</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.admin</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.contrib.fsm_storage.memory</span> <span class="kn">import</span> <span class="n">MemoryStorage</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+<span class="kn">from</span> <span class="nn">aiogram.types</span> <span class="kn">import</span> <span class="n">ReplyKeyboardRemove</span><span class="p">,</span> <span class="n">InlineKeyboardButton</span><span class="p">,</span> <span class="n">InlineKeyboardMarkup</span>
+
+<span class="kn">import</span> <span class="nn">config</span>
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">bot</span><span class="p">,</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">messages</span> <span class="kn">import</span> <span class="n">bot_messages</span> <span class="k">as</span> <span class="n">bm</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">DataBase</span>
+
+
+<span class="n">storage</span> <span class="o">=</span> <span class="n">MemoryStorage</span><span class="p">()</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DataBase</span><span class="p">()</span>
+
+<span class="n">admin_id</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">admin_id</span>
+
+
+<div class="viewcode-block" id="admin">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.admin">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">admin_id</span><span class="p">,</span> <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;admin&#39;</span><span class="p">])</span>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">admin</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Админ-панель бота. Показывает информацию для администраторов в личных сообщениях.</span>
+<span class="sd">    Выводит количество пользователей и предоставляет интерфейс управления.</span>
+
+<span class="sd">    :param message: Объект сообщения, который содержит команду.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;typing&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;private&#39;</span><span class="p">:</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User action: /admin (User ID: </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="n">user_count</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">user_count</span><span class="p">()</span>
+
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">admin_panel</span><span class="p">(</span>
+            <span class="n">user_count</span><span class="p">),</span>
+            <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">admin_keyboard</span><span class="p">(),</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">not_groups</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="send_to_all_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.send_to_all_callback">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;send_to_all&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">send_to_all_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Инициирует процедуру рассылки сообщений всем пользователям. Показывает клавиатуру для ввода сообщения.</span>
+
+<span class="sd">    :param call: Объект коллбэк-квери от кнопки рассылки.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                           <span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">mailing_message</span><span class="p">(),</span>
+                           <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;send_to_all_message&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="send_to_all_message">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.send_to_all_message">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;send_to_all_message&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">send_to_all_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Отправляет введённое администратором сообщение всем пользователям бота.</span>
+
+<span class="sd">    :param message: Сообщение от администратора, которое нужно рассылать.</span>
+<span class="sd">    :param state: Текущее состояние FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">sender_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">bm</span><span class="o">.</span><span class="n">canceled</span><span class="p">(),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;typing&quot;</span><span class="p">)</span>
+
+        <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">all_users</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">copy_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                       <span class="n">from_chat_id</span><span class="o">=</span><span class="n">sender_id</span><span class="p">,</span>
+                                       <span class="n">message_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
+                                       <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;MarkdownV2&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent message to user </span><span class="si">{</span><span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error sending message to user </span><span class="si">{</span><span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                               <span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">finish_mailing</span><span class="p">(),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="control_user_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.control_user_callback">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;control_user&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">control_user_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обработчик команды управления пользователями. Позволяет администратору искать пользователей</span>
+<span class="sd">    по различным критериям и управлять ими.</span>
+
+<span class="sd">    :param call: Объект коллбэк-квери от кнопки управления пользователями.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Search user by:&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_search_keyboard</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="search_user_by">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.search_user_by">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;search_&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">search_user_by</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+    
+    <span class="n">search</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Type user </span><span class="si">{search}</span><span class="s1">:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;control_user&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="n">search</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;control_user&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">control_user</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Позволяет администратору управлять найденным пользователем: блокировать, разблокировать,</span>
+<span class="sd">    просматривать информацию.</span>
+
+<span class="sd">    :param message: Сообщение, в котором указано действие над пользователем.</span>
+<span class="sd">    :param state: Текущее состояние FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">answer</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">answer</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;https://t.me/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                               <span class="s1">&#39;Action canceled\!&#39;</span><span class="p">,</span>
+                               <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">admin</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;typing&quot;</span><span class="p">)</span>
+
+        <span class="n">clock</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;⏳&#39;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">clock</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+        <span class="n">user</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">search</span> <span class="o">==</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_user_info</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">search</span> <span class="o">==</span> <span class="s2">&quot;username&quot;</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_user_info_username</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">user_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">user_username</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">user_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">search</span> <span class="o">==</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span>
+                <span class="n">user_name</span><span class="p">,</span> <span class="n">user_username</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="n">user_id</span> <span class="o">=</span> <span class="n">answer</span>
+
+            <span class="k">elif</span> <span class="n">search</span> <span class="o">==</span> <span class="s2">&quot;username&quot;</span><span class="p">:</span>
+                <span class="n">user_name</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="n">user_username</span> <span class="o">=</span> <span class="n">answer</span>
+
+            <span class="n">go_to_chat</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Enter in Conversation&quot;</span><span class="p">),</span> <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;tg://user?id=</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">write_user</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Write as a bot&#39;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;write_</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">ban_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;❌Ban&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;ban_</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">unban_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;✅Unban&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;unban_</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">back_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🔙Back&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;back_to_admin&quot;</span><span class="p">)</span>
+            <span class="n">control_keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+            <span class="n">control_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">go_to_chat</span><span class="p">,</span> <span class="n">write_user</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">user_username</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">user_username</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">user_username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">user_username</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">user_photo</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">get_user_profile_photos</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;user&#39;</span><span class="p">:</span>
+                <span class="n">control_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">ban_button</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;ban&#39;</span><span class="p">:</span>
+                <span class="n">control_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">unban_button</span><span class="p">)</span>
+
+            <span class="n">control_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">back_button</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">user_photo</span><span class="o">.</span><span class="n">total_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply_photo</span><span class="p">(</span><span class="n">user_photo</span><span class="o">.</span><span class="n">photos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">file_id</span><span class="p">,</span>
+                                          <span class="n">caption</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">return_user_info</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">user_username</span><span class="p">,</span> <span class="n">status</span><span class="p">),</span>
+                                          <span class="n">reply_markup</span><span class="o">=</span><span class="n">control_keyboard</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;MarkdownV2&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">bm</span><span class="o">.</span><span class="n">return_user_info</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">user_username</span><span class="p">,</span> <span class="n">status</span><span class="p">),</span>
+                                       <span class="n">reply_markup</span><span class="o">=</span><span class="n">control_keyboard</span><span class="p">,</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;MarkdownV2&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Control user: </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;User not found\!&quot;</span><span class="p">))</span>
+
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ban_&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">message_handler</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает запрос на блокировку пользователя. Запрашивает у администратора причину блокировки.</span>
+
+<span class="sd">    :param call: Коллбэк-квери, содержащее информацию для блокировки пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">banned_user_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Enter ban reason:&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;ban_reason&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">banned_user_id</span><span class="o">=</span><span class="n">banned_user_id</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="control_user">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.control_user">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;ban_reason&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">control_user</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Получает и обрабатывает причину блокировки пользователя. Выполняет блокировку.</span>
+
+<span class="sd">    :param message: Сообщение, содержащее причину блокировки.</span>
+<span class="sd">    :param state: Текущее состояние FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">reason</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">banned_user_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;banned_user_id&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Action canceled\!&#39;</span><span class="p">),</span>
+                               <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">admin</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">ban_user</span><span class="p">(</span><span class="n">banned_user_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">banned_user_id</span><span class="p">,</span>
+                           <span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">ban_message</span><span class="p">(</span><span class="n">reason</span><span class="p">),</span>
+                           <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+    <span class="n">ban_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">successful_ban</span><span class="p">(</span><span class="n">banned_user_id</span><span class="p">),</span>
+                                       <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">ban_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">successful_ban</span><span class="p">(</span><span class="n">banned_user_id</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_back_to_admin_keyboard</span><span class="p">())</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Banned user: </span><span class="si">{</span><span class="n">banned_user_id</span><span class="si">}</span><span class="s2"> Reason: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="message_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.message_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;unban_&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">message_handler</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает запрос на разблокировку пользователя.</span>
+
+<span class="sd">    :param call: Коллбэк-квери, содержащее информацию для разблокировки пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">unbanned_user_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">unban_user</span><span class="p">(</span><span class="n">unbanned_user_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">unbanned_user_id</span><span class="p">,</span>
+                           <span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">unban_message</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">successful_unban</span><span class="p">(</span><span class="n">unbanned_user_id</span><span class="p">),</span>
+                              <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_back_to_admin_keyboard</span><span class="p">())</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unbanned user: </span><span class="si">{</span><span class="n">unbanned_user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_users_data">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.export_users_data">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">admin_id</span><span class="p">,</span> <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;get_users&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">export_users_data</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Экспортирует данные всех пользователей в Excel файл и отправляет его администратору.</span>
+
+<span class="sd">    :param message: Сообщение, инициирующее экспорт данных.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">clock</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;⏳&#39;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">all_users</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
+        <span class="n">chat_id</span> <span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">get_chat</span><span class="p">(</span><span class="n">chat_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Chat not found&#39;</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">delete_user</span><span class="p">(</span><span class="n">chat_id</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2"> Chat ID: </span><span class="si">{</span><span class="n">chat_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">username</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">full_name</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">user_update_name</span><span class="p">(</span><span class="n">chat_id</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">users_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">get_all_users_info</span><span class="p">()</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">users_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;user_name&#39;</span><span class="p">,</span> <span class="s1">&#39;user_username&#39;</span><span class="p">,</span> <span class="s1">&#39;language&#39;</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">])</span>
+
+    <span class="n">excel_file</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">excel_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s1">&#39;users_data.xlsx&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">excel_file</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">clock</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_document</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Getting info about user&quot;</span><span class="p">)</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="back_to_admin">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.back_to_admin">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;back_to_admin&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">back_to_admin</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Возвращает администратора к админ-панели.</span>
+
+<span class="sd">    :param call: Коллбэк-квери, сигнализирующее о возвращении.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;typing&quot;</span><span class="p">)</span>
+
+    <span class="n">user_count</span> <span class="o">=</span> <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">user_count</span><span class="p">()</span>
+
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">admin_panel</span><span class="p">(</span><span class="n">user_count</span><span class="p">),</span>
+                              <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">admin_keyboard</span><span class="p">(),</span>
+                              <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="answer_feedback_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.answer_feedback_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;answer_&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">answer_feedback_handler</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Позволяет администратору ответить на сообщение пользователя.</span>
+
+<span class="sd">    :param call: Коллбэк-квери, содержащее запрос на ответ.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">message_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">chat_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete_reply_markup</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Please type your answer:&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s1">&#39;feedback_answer&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">message_id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span> <span class="n">chat_id</span><span class="o">=</span><span class="n">chat_id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="answer_feedback">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.answer_feedback">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;feedback_answer&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">answer_feedback</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает и отправляет ответ администратора на сообщение пользователя.</span>
+
+<span class="sd">    :param message: Сообщение с ответом.</span>
+<span class="sd">    :param state: Текущее состояние FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="k">if</span> <span class="n">answer</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Action canceled\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">message_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message_id&#39;</span><span class="p">)</span>
+    <span class="n">chat_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chat_id&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">chat_id</span><span class="p">,</span>
+                               <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your message *</span><span class="si">{message_id}</span><span class="s1">* was seen\!</span><span class="se">\n</span><span class="s1">*Answer:* `</span><span class="si">{answer}</span><span class="s1">`&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                   <span class="n">message_id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span> <span class="n">answer</span><span class="o">=</span><span class="n">answer</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your answer sent\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent answer for feedback to user </span><span class="si">{</span><span class="n">chat_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Something went wrong, see log for more information\!&quot;</span><span class="p">),</span>
+                            <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_back_to_admin_keyboard</span><span class="p">())</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending message to user </span><span class="si">{</span><span class="n">chat_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_message_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.write_message_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;write_&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">write_message_handler</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Позволяет администратору написать сообщение от имени бота.</span>
+
+<span class="sd">    :param call: Коллбэк-квери, содержащее запрос на написание сообщения.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">chat_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete_reply_markup</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Please type message:&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s1">&#39;write_message&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">chat_id</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="write_message">
+<a class="viewcode-back" href="../../handlers.html#handlers.admin.write_message">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;write_message&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">write_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Отправляет сообщение от имени бота в чат пользователя.</span>
+
+<span class="sd">    :param message: Сообщение для отправки.</span>
+<span class="sd">    :param state: Текущее состояние FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="k">if</span> <span class="n">answer</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Action canceled\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="n">chat_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chat_id&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">chat_id</span><span class="p">,</span>
+                               <span class="n">text</span><span class="o">=</span><span class="n">answer</span><span class="p">)</span>
+        <span class="n">message_sent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your message sent\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_sent</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your message sent\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_back_to_admin_keyboard</span><span class="p">())</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent message as bot to user </span><span class="si">{</span><span class="n">chat_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Something went wrong, see log for more information\!&quot;</span><span class="p">),</span>
+                            <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_back_to_admin_keyboard</span><span class="p">())</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending message to user </span><span class="si">{</span><span class="n">chat_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.admin</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

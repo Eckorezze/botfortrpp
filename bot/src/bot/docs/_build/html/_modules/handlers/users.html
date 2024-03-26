@@ -1,0 +1,254 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.users &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.users</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.users</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+
+<span class="kn">import</span> <span class="nn">config</span>
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">bot</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">update_info</span>
+<span class="kn">from</span> <span class="nn">messages</span> <span class="kn">import</span> <span class="n">bot_messages</span> <span class="k">as</span> <span class="n">bm</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span> <span class="nn">services</span> <span class="kn">import</span> <span class="n">DataBase</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DataBase</span><span class="p">()</span>
+
+<span class="n">admin_id</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">admin_id</span>
+
+<div class="viewcode-block" id="send_welcome">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.send_welcome">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">,</span> <span class="s1">&#39;📂Меню&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Отправляет приветственное сообщение новым пользователям или выводит главное меню.</span>
+
+<span class="sd">    Эта функция вызывается при получении команды /start или при выборе пункта меню &quot;Меню&quot;.</span>
+<span class="sd">    Добавляет пользователя в базу данных, если он там отсутствует, и отправляет приветственное сообщение.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;typing&quot;</span><span class="p">)</span>
+
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">user_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">full_name</span>
+    <span class="n">user_username</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">username</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">add_users</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">user_username</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Hi\! I&#39;m your bot&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="info_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.info_handler">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ℹ️INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;ℹ️ИНФО&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">info_handler</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает запрос информации о боте.</span>
+
+<span class="sd">    Отправляет пользователю информационное сообщение с описанием функционала бота.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с запросом информации.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">bm</span><span class="o">.</span><span class="n">send_info</span><span class="p">(),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_feedback_button</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="change_lang">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.change_lang">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">change_lang</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Предлагает пользователю выбрать язык интерфейса.</span>
+
+<span class="sd">    После команды /language выводит клавиатуру с доступными языками.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение от пользователя с командой смены языка.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">)</span>
+
+    <span class="n">wait_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">wait_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please choose your language&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">lang_keyboard</span><span class="p">,</span>
+                         <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;MarkdownV2&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="language_callback">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.language_callback">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;lang_&#39;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">language_callback</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает выбор языка пользователя.</span>
+
+<span class="sd">    Сохраняет выбранный пользователем язык в базе данных и отправляет подтверждение.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - call (types.CallbackQuery): Callback-запрос от пользователя с выбором языка.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">language</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">await</span> <span class="n">db</span><span class="o">.</span><span class="n">set_language</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">language</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_chat_action</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">edit_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">choose_lan</span><span class="p">(</span><span class="n">language</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="feedback_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.feedback_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;feedback&#39;</span><span class="p">)</span>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">feedback_handler</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Инициирует процесс отправки обратной связи.</span>
+
+<span class="sd">    Удаляет предыдущее сообщение и приглашает пользователя ввести своё сообщение для обратной связи.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - call (types.CallbackQuery): Callback-запрос на отправку обратной связи.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Введите ваше сообщение:&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">cancel_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">dp</span><span class="o">.</span><span class="n">current_state</span><span class="p">()</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="s2">&quot;send_feedback&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">update_info</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="feedback">
+<a class="viewcode-back" href="../../handlers.html#handlers.users.feedback">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s2">&quot;send_feedback&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">feedback</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает сообщение обратной связи от пользователя.</span>
+
+<span class="sd">    Отправляет сообщение администратору и информирует пользователя о доставке.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - message (types.Message): Сообщение обратной связи от пользователя.</span>
+<span class="sd">    - state (FSMContext): Состояние диалога с пользователем.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">feedback_message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">feedback_message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">message_id</span>
+    <span class="n">feedback_message_chat_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">user_username</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">username</span>
+
+    <span class="k">if</span> <span class="n">feedback_message</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Отмена&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                               <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Действие отменено&#39;</span><span class="p">),</span>
+                               <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">info_handler</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">user_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">user_username</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">user_id</span>
+
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">admin_id</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">bm</span><span class="o">.</span><span class="n">feedback_message_send</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">feedback_message</span><span class="p">),</span>
+                           <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">feedback_answer</span><span class="p">(</span><span class="n">feedback_message_id</span><span class="p">,</span> <span class="n">feedback_message_chat_id</span><span class="p">),</span>
+                           <span class="n">parse_mode</span><span class="o">=</span><span class="s2">&quot;MarkdownV2&quot;</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Ваше сообщениe *</span><span class="si">{feedback_message_id}</span><span class="s2">* отправлено&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feedback_message_id</span><span class="o">=</span><span class="n">feedback_message_id</span><span class="p">),</span>
+        <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">update_info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.users</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

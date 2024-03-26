@@ -1,0 +1,127 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.entertaiment &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.entertaiment</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.entertaiment</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+
+
+<div class="viewcode-block" id="entertainments_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.entertaiment.entertainments_handler">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;🎮Entertainments&#39;</span><span class="p">,</span> <span class="s1">&#39;🎮Развлечения&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">entertainments_handler</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает сообщения, связанные с разделом развлечений в Telegram-боте.</span>
+
+<span class="sd">    Отвечает на сообщения с текстом &quot;🎮Entertainments&quot; или &quot;🎮Развлечения&quot;,</span>
+<span class="sd">    отправляя приветственное сообщение и клавиатуру развлечений.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message (aiogram.types.Message): Сообщение от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Hi\, this is the entertainment section\!&#39;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_entertainment_keyboard</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="entertainment">
+<a class="viewcode-back" href="../../handlers.html#handlers.entertaiment.entertainment">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Кубик🎲&quot;</span><span class="p">,</span> <span class="s1">&#39;Dice🎲&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">entertainment</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает команды для броска кубика в Telegram-боте.</span>
+
+<span class="sd">    Поддерживает команды &quot;Кубик🎲&quot; и &quot;Dice🎲&quot;, позволяя пользователю бросить кубик.</span>
+<span class="sd">    После броска кубика бот ждет 4 секунды, прежде чем отправить результат броска.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message (aiogram.types.Message): Сообщение от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">result</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_dice</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                                <span class="n">allow_sending_without_reply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dice_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">dice</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Dice🎲&#39;</span><span class="p">,</span> <span class="s1">&#39;Кубик🎲&#39;</span><span class="p">]:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The dice rolled *</span><span class="si">{dice_result}</span><span class="s2">*&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dice_result</span><span class="o">=</span><span class="n">dice_result</span><span class="p">),</span>
+                            <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.entertaiment</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

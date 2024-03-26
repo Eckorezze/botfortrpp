@@ -1,0 +1,327 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.qr_code &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.qr_code</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.qr_code</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">segno</span>
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher.filters.state</span> <span class="kn">import</span> <span class="n">State</span><span class="p">,</span> <span class="n">StatesGroup</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span> <span class="nn">segno</span> <span class="kn">import</span> <span class="n">helpers</span>
+
+<span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">users</span> <span class="k">as</span> <span class="n">hu</span>
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">bot</span><span class="p">,</span> <span class="n">_</span>
+
+
+<div class="viewcode-block" id="GenerateQRCode">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.GenerateQRCode">[документация]</a>
+<span class="k">class</span> <span class="nc">GenerateQRCode</span><span class="p">(</span><span class="n">StatesGroup</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Определяет состояния (шаги) для генерации QR-кода.</span>
+
+<span class="sd">    Состояния:</span>
+<span class="sd">    - Ожидание типа ссылки.</span>
+<span class="sd">    - Ожидание SSID Wi-Fi.</span>
+<span class="sd">    - Ожидание пароля Wi-Fi.</span>
+<span class="sd">    - Ожидание цвета переднего плана.</span>
+<span class="sd">    - Ожидание цвета фона.</span>
+<span class="sd">    - Ожидание генерации.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">waiting_for_link_type</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">waiting_for_wifi_ssid</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">waiting_for_wifi_password</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">waiting_for_fg_color</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">waiting_for_bg_color</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">waiting_for_generate</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_url_type">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.get_url_type">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;QR code&quot;</span><span class="p">,</span> <span class="s2">&quot;QR код&quot;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_url_type</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает у пользователя тип QR-кода.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Choose the type of QR code:&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_qr_type_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_link_type</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="process_link_type">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.process_link_type">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_link_type</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_link_type</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает выбор типа QR-кода пользователя.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">link_type</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="k">elif</span> <span class="n">link_type</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Simple QR code&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Enter URL:&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_menu_keyboard</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_fg_color</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">link_type</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Wi-Fi QR\-code&quot;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Enter the Wi\-Fi network name:&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_menu_keyboard</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_wifi_ssid</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">link_type</span><span class="o">=</span><span class="n">link_type</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_wifi_ssid">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.process_wifi_ssid">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_wifi_ssid</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_wifi_ssid</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает SSID Wi-Fi для генерации Wi-Fi QR-кода.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="n">wifi_ssid</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Enter Wi\-Fi password:&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_menu_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_wifi_password</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">wifi_ssid</span><span class="o">=</span><span class="n">wifi_ssid</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="process_wifi_password">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.process_wifi_password">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_wifi_password</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_wifi_password</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает пароль Wi-Fi для генерации Wi-Fi QR-кода.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="n">wifi_password</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Select the color of the QR code\.&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_color_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_bg_color</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">wifi_password</span><span class="o">=</span><span class="n">wifi_password</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fg_color">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.fg_color">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_fg_color</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fg_color</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает цвет переднего плана для QR-кода.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Select the color of the QR code\.&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_color_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_bg_color</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="menu_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.menu_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="p">[</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_bg_color</span><span class="p">,</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_generate</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">menu_handler</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обрабатывает возврат в меню из любого состояния генерации QR-кода.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        message: Сообщение от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="bg_color">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.bg_color">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;color_&#39;</span><span class="p">),</span> <span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_bg_color</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">bg_color</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Запрашивает цвет фона для QR-кода после выбора цвета переднего плана.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        call: CallbackQuery от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">fg_color</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">edit_text</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Now choose a background color.&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_color_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_generate</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">fg_color</span><span class="o">=</span><span class="n">fg_color</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="qenerate_qr">
+<a class="viewcode-back" href="../../handlers.html#handlers.qr_code.qenerate_qr">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">callback_query_handler</span><span class="p">(</span><span class="k">lambda</span> <span class="n">call</span><span class="p">:</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;color_&#39;</span><span class="p">),</span> <span class="n">state</span><span class="o">=</span><span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_generate</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">qenerate_qr</span><span class="p">(</span><span class="n">call</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">CallbackQuery</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Генерирует и отправляет QR-код на основе выбранных пользователем параметров.</span>
+
+<span class="sd">    Аргументы:</span>
+<span class="sd">        call: CallbackQuery от пользователя.</span>
+<span class="sd">        state: Состояние конечного автомата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+    <span class="n">bg_color</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">link_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;link_type&#39;</span><span class="p">)</span>
+    <span class="n">fg_color</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fg_color&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">bg_color</span> <span class="o">==</span> <span class="n">fg_color</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">edit_text</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You can&#39;t choose the same color twice\! Choose the colors again\.&quot;</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Select the color of the QR code\.&quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_color_keyboard</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">GenerateQRCode</span><span class="o">.</span><span class="n">waiting_for_bg_color</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="n">wait_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">qr_code_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;downloads/</span><span class="si">{</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">from_user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_qr_code.png&quot;</span>
+
+
+    <span class="k">if</span> <span class="n">link_type</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Simple QR code&quot;</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+
+        <span class="n">qrcode</span> <span class="o">=</span> <span class="n">segno</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">micro</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">qrcode</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">qr_code_path</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="n">fg_color</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">link_type</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Wi\-Fi QR\-code&quot;</span><span class="p">):</span>
+        <span class="n">wifi_ssid</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wifi_ssid&#39;</span><span class="p">)</span>
+        <span class="n">wifi_password</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wifi_password&#39;</span><span class="p">)</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">make_wifi_data</span><span class="p">(</span><span class="n">ssid</span><span class="o">=</span><span class="n">wifi_ssid</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">wifi_password</span><span class="p">,</span> <span class="n">security</span><span class="o">=</span><span class="s1">&#39;WPA&#39;</span><span class="p">)</span>
+        <span class="n">qrcode</span> <span class="o">=</span> <span class="n">segno</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">)</span>
+        <span class="n">qrcode</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">qr_code_path</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="n">fg_color</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="n">bg_color</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">wait_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">qr_code_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">qr_code_file</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_photo</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">qr_code_file</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Scan the QR code&quot;</span><span class="p">),</span>
+                             <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">qr_code_path</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.qr_code</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

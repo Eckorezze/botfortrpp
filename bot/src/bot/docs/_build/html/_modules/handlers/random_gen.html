@@ -1,0 +1,228 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handlers.random_gen &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=29b1f277"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.random_gen</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код handlers.random_gen</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher</span> <span class="kn">import</span> <span class="n">FSMContext</span>
+<span class="kn">from</span> <span class="nn">aiogram.dispatcher.filters.state</span> <span class="kn">import</span> <span class="n">State</span><span class="p">,</span> <span class="n">StatesGroup</span>
+
+<span class="kn">from</span> <span class="nn">handlers</span> <span class="kn">import</span> <span class="n">users</span> <span class="k">as</span> <span class="n">hu</span>
+<span class="kn">import</span> <span class="nn">keyboards</span> <span class="k">as</span> <span class="nn">kb</span>
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">dp</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">middlewares.throttling_middleware</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+
+
+<div class="viewcode-block" id="GeneratePass">
+<a class="viewcode-back" href="../../handlers.html#handlers.random_gen.GeneratePass">[документация]</a>
+<span class="k">class</span> <span class="nc">GeneratePass</span><span class="p">(</span><span class="n">StatesGroup</span><span class="p">):</span>
+    <span class="n">pass_len</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span>
+    <span class="n">num_length</span> <span class="o">=</span> <span class="n">State</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="password_generator_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.random_gen.password_generator_handler">[документация]</a>
+<span class="nd">@rate_limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;🔐Generate password&#39;</span><span class="p">,</span> <span class="s1">&#39;🔐Сгенерировать пароль&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">password_generator_handler</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обработчик команды генерации пароля.</span>
+
+<span class="sd">    Посылает пользователю запрос на ввод длины пароля.</span>
+
+<span class="sd">    :param message: Объект сообщения от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please enter password length: &quot;</span><span class="p">),</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_menu_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GeneratePass</span><span class="o">.</span><span class="n">pass_len</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="generate_password">
+<a class="viewcode-back" href="../../handlers.html#handlers.random_gen.generate_password">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GeneratePass</span><span class="o">.</span><span class="n">pass_len</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">generate_password</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Генерирует пароль указанной длины.</span>
+
+<span class="sd">    Проверяет введённую длину и генерирует пароль, если введено корректное значение.</span>
+
+<span class="sd">    :param message: Объект сообщения от пользователя.</span>
+<span class="sd">    :param state: Состояние в контексте FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">pass_len</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">pass_len</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">pass_len</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Password can&#39;t be greater than 64 symbols&quot;</span><span class="p">))</span>
+            <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">GeneratePass</span><span class="o">.</span><span class="n">pass_len</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="k">return</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Please enter correct numbers: &#39;</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">GeneratePass</span><span class="o">.</span><span class="n">pass_len</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">pass_len</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="n">chars</span> <span class="o">=</span> <span class="s1">&#39;+-*!&amp;$#?=@&lt;&gt;abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890&#39;</span>
+
+        <span class="n">lenght</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pass_len</span><span class="p">)</span>
+
+        <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">wait_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lenght</span><span class="p">):</span>
+            <span class="n">password</span> <span class="o">+=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">wait_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Here are your password:</span><span class="se">\n\n</span><span class="s1"> `</span><span class="si">{password}</span><span class="s1">`&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">),</span>
+                             <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">,</span>
+                             <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please enter a number: &quot;</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">GeneratePass</span><span class="o">.</span><span class="n">pass_len</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="random_num_handler">
+<a class="viewcode-back" href="../../handlers.html#handlers.random_gen.random_num_handler">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;🔢Random number&#39;</span><span class="p">,</span> <span class="s1">&#39;🔢Случайное число&#39;</span><span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">random_num_handler</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обработчик команды генерации случайного числа.</span>
+
+<span class="sd">    Посылает пользователю запрос на ввод диапазона чисел.</span>
+
+<span class="sd">    :param message: Объект сообщения от пользователя.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Hi enter range of numbers by \-, or select one from examples\.&quot;</span><span class="p">),</span>
+                         <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_numbers_keyboard</span><span class="p">())</span>
+    <span class="k">await</span> <span class="n">GeneratePass</span><span class="o">.</span><span class="n">num_length</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="generate_num">
+<a class="viewcode-back" href="../../handlers.html#handlers.random_gen.generate_num">[документация]</a>
+<span class="nd">@dp</span><span class="o">.</span><span class="n">message_handler</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">GeneratePass</span><span class="o">.</span><span class="n">num_length</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">generate_num</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">Message</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">FSMContext</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Генерирует случайное число в указанном пользователем диапазоне.</span>
+
+<span class="sd">    :param message: Объект сообщения от пользователя.</span>
+<span class="sd">    :param state: Состояние в контексте FSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">):</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">hu</span><span class="o">.</span><span class="n">send_welcome</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">wait_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span> <span class="n">reply_markup</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardRemove</span><span class="p">())</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">first_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">second_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">first_num</span><span class="p">,</span> <span class="n">second_num</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+        <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">chat_id</span><span class="o">=</span><span class="n">message</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message_id</span><span class="o">=</span><span class="n">wait_message</span><span class="o">.</span><span class="n">message_id</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your number is `</span><span class="si">{number}</span><span class="s1">`&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">),</span> <span class="n">parse_mode</span><span class="o">=</span><span class="s1">&#39;MarkdownV2&#39;</span><span class="p">,</span>
+                             <span class="n">reply_markup</span><span class="o">=</span><span class="n">kb</span><span class="o">.</span><span class="n">return_select_keyboard</span><span class="p">())</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">answer</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Please enter correct numbers: &#39;</span><span class="p">))</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers.random_gen</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,384 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>keyboards &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="../_static/documentation_options.js?v=372fde1a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=29b1f277"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyboards</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <h1>Исходный код keyboards</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">aiogram</span> <span class="kn">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">aiogram.types</span> <span class="kn">import</span> <span class="n">ReplyKeyboardMarkup</span><span class="p">,</span> <span class="n">KeyboardButton</span><span class="p">,</span> <span class="n">InlineKeyboardMarkup</span><span class="p">,</span> <span class="n">InlineKeyboardButton</span>
+
+<span class="kn">from</span> <span class="nn">main</span> <span class="kn">import</span> <span class="n">_</span>
+
+<span class="n">lang_keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для выбора языка.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопками для выбора языка.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">lang_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Русский🇷🇺&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;lang_ru&quot;</span><span class="p">),</span>
+                  <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;English🇬🇧&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;lang_en&quot;</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="return_qr_type_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_qr_type_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_qr_type_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для выбора типа QR-кода.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопками для выбора типа QR-кода и кнопкой возврата в меню.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">qr_type_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">simple_qr_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Simple QR code&quot;</span><span class="p">))</span>
+    <span class="n">wifi_qr_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Wi-Fi QR-code&quot;</span><span class="p">))</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">qr_type_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">simple_qr_button</span><span class="p">,</span> <span class="n">wifi_qr_button</span><span class="p">)</span>
+    <span class="n">qr_type_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">qr_type_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_select_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_select_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_select_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает главную клавиатуру бота с основными функциями.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопками основных функций бота.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">select_keyboard</span> <span class="o">=</span> <span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">qr_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;QR code&quot;</span><span class="p">))</span>
+    <span class="n">wt_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🌦Weather&quot;</span><span class="p">))</span>
+    <span class="n">nt_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🎯Tasks&quot;</span><span class="p">))</span>
+    <span class="n">pass_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🔐Generate password&quot;</span><span class="p">))</span>
+    <span class="n">random_num_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🔢Random number&quot;</span><span class="p">))</span>
+    <span class="n">entertainment_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;🎮Entertainments&#39;</span><span class="p">))</span>
+    <span class="n">info_button</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;ℹ️INFO&quot;</span><span class="p">))</span>
+    <span class="n">select_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">qr_button</span><span class="p">,</span> <span class="n">wt_button</span><span class="p">,</span> <span class="n">nt_button</span><span class="p">)</span>
+    <span class="n">select_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">pass_button</span><span class="p">,</span> <span class="n">random_num_button</span><span class="p">)</span>
+    <span class="n">select_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">entertainment_button</span><span class="p">)</span>
+    <span class="n">select_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">info_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">select_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_color_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_color_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_color_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для выбора цвета.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопками различных цветов.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">color_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">red_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟥&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_red&quot;</span><span class="p">)</span>
+    <span class="n">orange_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟧&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_orange&quot;</span><span class="p">)</span>
+    <span class="n">yellow_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟨&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_yellow&quot;</span><span class="p">)</span>
+    <span class="n">green_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟩&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_green&quot;</span><span class="p">)</span>
+    <span class="n">blue_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟦&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_blue&quot;</span><span class="p">)</span>
+    <span class="n">purple_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟪&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_purple&quot;</span><span class="p">)</span>
+    <span class="n">black_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;⬛️&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_black&quot;</span><span class="p">)</span>
+    <span class="n">white_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;⬜️&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_white&quot;</span><span class="p">)</span>
+    <span class="n">brown_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;🟫&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;color_brown&quot;</span><span class="p">)</span>
+    <span class="n">color_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">red_button</span><span class="p">,</span> <span class="n">orange_button</span><span class="p">,</span> <span class="n">yellow_button</span><span class="p">)</span>
+    <span class="n">color_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">green_button</span><span class="p">,</span> <span class="n">blue_button</span><span class="p">,</span> <span class="n">purple_button</span><span class="p">)</span>
+    <span class="n">color_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">black_button</span><span class="p">,</span> <span class="n">white_button</span><span class="p">,</span> <span class="n">brown_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">color_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_location_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_location_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_location_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для отправки геолокации.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопкой для отправки геолокации и кнопкой возврата в меню.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">location_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">row_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">send_location_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📍Set your location&#39;</span><span class="p">),</span> <span class="n">request_location</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">location_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">send_location_button</span><span class="p">)</span>
+    <span class="n">location_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">location_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_weather_or_forecast_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_weather_or_forecast_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_weather_or_forecast_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для выбора между текущей погодой и прогнозом на завтра.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с соответствующими кнопками выбора и кнопкой возврата в меню.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">weather_or_forecast_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">row_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">get_weather_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Current weather&#39;</span><span class="p">))</span>
+    <span class="n">get_forecast_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Forecast for tomorrow&#39;</span><span class="p">))</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">weather_or_forecast_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">get_weather_button</span><span class="p">,</span> <span class="n">get_forecast_button</span><span class="p">)</span>
+    <span class="n">weather_or_forecast_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">weather_or_forecast_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_numbers_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_numbers_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_numbers_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для выбора диапазона чисел.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопками различных числовых диапазонов.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">numbers_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">z_h_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="s1">&#39;0-99&#39;</span><span class="p">)</span>
+    <span class="n">z_t_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="s1">&#39;0-999&#39;</span><span class="p">)</span>
+    <span class="n">z_tt_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="s1">&#39;0-9999&#39;</span><span class="p">)</span>
+    <span class="n">z_ht_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="s1">&#39;0-99999&#39;</span><span class="p">)</span>
+    <span class="n">z_m_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="s1">&#39;0-999999&#39;</span><span class="p">)</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">numbers_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">z_h_button</span><span class="p">,</span> <span class="n">z_t_button</span><span class="p">,</span> <span class="n">z_tt_button</span><span class="p">)</span>
+    <span class="n">numbers_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">z_ht_button</span><span class="p">,</span> <span class="n">z_m_button</span><span class="p">)</span>
+    <span class="n">numbers_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">numbers_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_menu_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_menu_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_menu_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру с кнопкой возврата в меню.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопкой возврата в меню.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">menu_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">menu_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">menu_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_entertainment_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_entertainment_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_entertainment_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для развлечений.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопками доступных развлечений.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">entertainment_keyboard</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dice_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Dice🎲&#39;</span><span class="p">))</span>
+    <span class="n">menu_button</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;📂Menu&#39;</span><span class="p">))</span>
+    <span class="n">entertainment_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dice_button</span><span class="p">)</span>
+    <span class="n">entertainment_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">menu_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">entertainment_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="cancel_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.cancel_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">cancel_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для отмены текущего действия.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    ReplyKeyboardMarkup с кнопкой отмены.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">cancel_keyboard</span> <span class="o">=</span> <span class="n">ReplyKeyboardMarkup</span><span class="p">(</span><span class="n">resize_keyboard</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">row_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cancel</span> <span class="o">=</span> <span class="n">KeyboardButton</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;↩️Cancel&quot;</span><span class="p">))</span>
+    <span class="n">cancel_keyboard</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cancel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cancel_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="admin_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.admin_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">admin_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для администратора.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопками управления для администратора.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">admin_keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+    <span class="n">send_to_all_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;💬Mailing&#39;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s1">&#39;send_to_all&#39;</span><span class="p">)</span>
+    <span class="n">control_user_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;👤Control User&quot;</span><span class="p">),</span>
+                                               <span class="n">callback_data</span><span class="o">=</span><span class="s1">&#39;control_user&#39;</span><span class="p">)</span>
+
+    <span class="n">admin_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">send_to_all_button</span><span class="p">)</span>
+    <span class="n">admin_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">control_user_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">admin_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_search_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_search_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_search_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для поиска пользователей.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопками выбора критериев поиска.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">search_keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">()</span>
+    <span class="n">id_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;search_id&quot;</span><span class="p">)</span>
+    <span class="n">username_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;search_username&quot;</span><span class="p">)</span>
+    <span class="n">search_keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">username_button</span><span class="p">,</span> <span class="n">id_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">search_keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_back_to_admin_keyboard">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_back_to_admin_keyboard">[документация]</a>
+<span class="k">def</span> <span class="nf">return_back_to_admin_keyboard</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для возвращения в админское меню.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопкой возврата.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">row_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">back_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;🔙Back&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s2">&quot;back_to_admin&quot;</span><span class="p">)</span>
+    <span class="n">keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">back_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="return_feedback_button">
+<a class="viewcode-back" href="../keyboards.html#keyboards.return_feedback_button">[документация]</a>
+<span class="k">def</span> <span class="nf">return_feedback_button</span><span class="p">():</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для отправки обратной связи.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопкой для отправки обратной связи.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">row_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">feedback_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Feedback💬&quot;</span><span class="p">),</span> <span class="n">callback_data</span><span class="o">=</span><span class="s1">&#39;feedback&#39;</span><span class="p">)</span>
+    <span class="n">keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">feedback_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keyboard</span></div>
+
+
+
+<div class="viewcode-block" id="feedback_answer">
+<a class="viewcode-back" href="../keyboards.html#keyboards.feedback_answer">[документация]</a>
+<span class="k">def</span> <span class="nf">feedback_answer</span><span class="p">(</span><span class="n">feedback_message_id</span><span class="p">,</span> <span class="n">feedback_message_chat_id</span><span class="p">):</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Создаёт и возвращает клавиатуру для ответа на обратную связь.</span>
+<span class="sd">    </span>
+<span class="sd">    Аргументы:</span>
+<span class="sd">    - feedback_message_id: Идентификатор сообщения обратной связи.</span>
+<span class="sd">    - feedback_message_chat_id: Идентификатор чата, из которого была отправлена обратная связь.</span>
+<span class="sd">    </span>
+<span class="sd">    Возвращает:</span>
+<span class="sd">    InlineKeyboardMarkup с кнопкой для ответа на обратную связь.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">keyboard</span> <span class="o">=</span> <span class="n">InlineKeyboardMarkup</span><span class="p">(</span><span class="n">row_width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">answer_button</span> <span class="o">=</span> <span class="n">InlineKeyboardButton</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Answer💬&quot;</span><span class="p">),</span>
+                                         <span class="n">callback_data</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;answer_</span><span class="si">{</span><span class="n">feedback_message_id</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">feedback_message_chat_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">keyboard</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">answer_button</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keyboard</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Код модуля</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyboards</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>keyboards package &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=29b1f277"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="messages package" href="messages.html" />
+    <link rel="prev" title="handlers package" href="handlers.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="messages.html" title="messages package"
+             accesskey="N">вперёд</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers package"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyboards package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="keyboards-package">
+<h1>keyboards package<a class="headerlink" href="#keyboards-package" title="Link to this heading">¶</a></h1>
+<section id="module-keyboards">
+<span id="keyboards-keyboards-module"></span><h2>keyboards.keyboards module<a class="headerlink" href="#module-keyboards" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.admin_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">admin_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#admin_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.admin_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для администратора.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопками управления для администратора.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.cancel_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">cancel_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#cancel_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.cancel_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для отмены текущего действия.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопкой отмены.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.feedback_answer">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">feedback_answer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feedback_message_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feedback_message_chat_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#feedback_answer"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.feedback_answer" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для ответа на обратную связь.</p>
+<p>Аргументы:
+- feedback_message_id: Идентификатор сообщения обратной связи.
+- feedback_message_chat_id: Идентификатор чата, из которого была отправлена обратная связь.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопкой для ответа на обратную связь.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="keyboards.lang_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">lang_keyboard</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;InlineKeyboardMarkup</span> <span class="pre">{&quot;inline_keyboard&quot;:</span> <span class="pre">[[{&quot;text&quot;:</span> <span class="pre">&quot;Русский🇷🇺&quot;,</span> <span class="pre">&quot;callback_data&quot;:</span> <span class="pre">&quot;lang_ru&quot;},</span> <span class="pre">{&quot;text&quot;:</span> <span class="pre">&quot;English🇬🇧&quot;,</span> <span class="pre">&quot;callback_data&quot;:</span> <span class="pre">&quot;lang_en&quot;}]]}&gt;</span></em><a class="headerlink" href="#keyboards.lang_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для выбора языка.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопками для выбора языка.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_back_to_admin_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_back_to_admin_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_back_to_admin_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_back_to_admin_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для возвращения в админское меню.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопкой возврата.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_color_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_color_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_color_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_color_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для выбора цвета.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопками различных цветов.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_entertainment_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_entertainment_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_entertainment_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_entertainment_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для развлечений.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопками доступных развлечений.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_feedback_button">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_feedback_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_feedback_button"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_feedback_button" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для отправки обратной связи.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопкой для отправки обратной связи.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_location_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_location_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_location_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_location_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для отправки геолокации.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопкой для отправки геолокации и кнопкой возврата в меню.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_menu_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_menu_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_menu_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_menu_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру с кнопкой возврата в меню.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопкой возврата в меню.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_numbers_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_numbers_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_numbers_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_numbers_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для выбора диапазона чисел.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопками различных числовых диапазонов.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_qr_type_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_qr_type_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_qr_type_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_qr_type_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для выбора типа QR-кода.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопками для выбора типа QR-кода и кнопкой возврата в меню.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_search_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_search_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_search_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_search_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для поиска пользователей.</p>
+<p>Возвращает:
+InlineKeyboardMarkup с кнопками выбора критериев поиска.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_select_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_select_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_select_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_select_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает главную клавиатуру бота с основными функциями.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с кнопками основных функций бота.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="keyboards.return_weather_or_forecast_keyboard">
+<span class="sig-prename descclassname"><span class="pre">keyboards.</span></span><span class="sig-name descname"><span class="pre">return_weather_or_forecast_keyboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/keyboards.html#return_weather_or_forecast_keyboard"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#keyboards.return_weather_or_forecast_keyboard" title="Link to this definition">¶</a></dt>
+<dd><p>Создаёт и возвращает клавиатуру для выбора между текущей погодой и прогнозом на завтра.</p>
+<p>Возвращает:
+ReplyKeyboardMarkup с соответствующими кнопками выбора и кнопкой возврата в меню.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="messages.html" title="messages package"
+             >вперёд</a> |</li>
+        <li class="right" >
+          <a href="handlers.html" title="handlers package"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyboards package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

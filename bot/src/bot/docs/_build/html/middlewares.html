@@ -1,0 +1,233 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>middlewares package &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=29b1f277"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="services package" href="services.html" />
+    <link rel="prev" title="messages package" href="messages.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="services.html" title="services package"
+             accesskey="N">вперёд</a> |</li>
+        <li class="right" >
+          <a href="messages.html" title="messages package"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">middlewares package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="middlewares-package">
+<h1>middlewares package<a class="headerlink" href="#middlewares-package" title="Link to this heading">¶</a></h1>
+<section id="module-middlewares.ban_middleware">
+<span id="middlewares-ban-middleware-module"></span><h2>middlewares.ban_middleware module<a class="headerlink" href="#module-middlewares.ban_middleware" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.UserBannedMiddleware">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">middlewares.ban_middleware.</span></span><span class="sig-name descname"><span class="pre">UserBannedMiddleware</span></span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#UserBannedMiddleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.UserBannedMiddleware" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMiddleware</span></code></p>
+<p>Промежуточное программное обеспечение для проверки статуса пользователя.</p>
+<p>Перед обработкой каждого сообщения, колбэк-запроса или инлайн-запроса проверяет,
+не заблокирован ли пользователь. Если пользователь заблокирован, обработка запроса прекращается,
+и пользователю отправляется сообщение о блокировке.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.UserBannedMiddleware.on_process_callback_query">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_process_callback_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#UserBannedMiddleware.on_process_callback_query"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.UserBannedMiddleware.on_process_callback_query" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает входящие колбэк-запросы.</p>
+<p>Параметры:
+- call (CallbackQuery): Объект колбэк-запроса от пользователя.
+- data (dict): Словарь с дополнительными данными.</p>
+<p>Аналогично методу on_process_message, проверяет статус пользователя и, при необходимости,
+информирует его о блокировке, прекращая дальнейшую обработку запроса.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.UserBannedMiddleware.on_process_inline_query">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_process_inline_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InlineQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#UserBannedMiddleware.on_process_inline_query"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.UserBannedMiddleware.on_process_inline_query" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает входящие инлайн-запросы.</p>
+<p>Параметры:
+- query (InlineQuery): Объект инлайн-запроса от пользователя.
+- data (dict): Словарь с дополнительными данными.</p>
+<p>Проверяет, не заблокирован ли пользователь, и в случае блокировки прекращает обработку запроса.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.UserBannedMiddleware.on_process_message">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_process_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#UserBannedMiddleware.on_process_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.UserBannedMiddleware.on_process_message" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает входящие сообщения.</p>
+<p>Параметры:
+- message (Message): Объект сообщения от пользователя.
+- data (dict): Словарь с дополнительными данными.</p>
+<p>Проверяет статус пользователя в базе данных. Если пользователь заблокирован,
+отправляет ему сообщение о блокировке и прекращает обработку сообщения.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.setup_ban_middleware">
+<span class="sig-prename descclassname"><span class="pre">middlewares.ban_middleware.</span></span><span class="sig-name descname"><span class="pre">setup_ban_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dispatcher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#setup_ban_middleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.setup_ban_middleware" title="Link to this definition">¶</a></dt>
+<dd><p>Регистрирует промежуточное программное обеспечение проверки блокировки пользователя в диспетчере.</p>
+<p>Параметры:
+- dp (Dispatcher): Экземпляр диспетчера Aiogram.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.ban_middleware.setup_ban_middlewares">
+<span class="sig-prename descclassname"><span class="pre">middlewares.ban_middleware.</span></span><span class="sig-name descname"><span class="pre">setup_ban_middlewares</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dispatcher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/ban_middleware.html#setup_ban_middlewares"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.ban_middleware.setup_ban_middlewares" title="Link to this definition">¶</a></dt>
+<dd><p>Вспомогательная функция для регистрации всех необходимых промежуточных программных обеспечений.</p>
+<p>Параметры:
+- dp (Dispatcher): Экземпляр диспетчера Aiogram.</p>
+<p>В текущей реализации регистрирует только middleware проверки блокировки пользователя.</p>
+</dd></dl>
+
+</section>
+<section id="module-middlewares.language_middleware">
+<span id="middlewares-language-middleware-module"></span><h2>middlewares.language_middleware module<a class="headerlink" href="#module-middlewares.language_middleware" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="middlewares.language_middleware.ACLMiddleware">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">middlewares.language_middleware.</span></span><span class="sig-name descname"><span class="pre">ACLMiddleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'en'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/language_middleware.html#ACLMiddleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.language_middleware.ACLMiddleware" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">I18nMiddleware</span></code></p>
+<p>Промежуточное программное обеспечение для определения языка пользователя.</p>
+<p>Расширяет стандартный I18nMiddleware, переопределяя метод получения локали пользователя.
+Определяет язык, используемый в интерфейсе пользователя, на основе данных из базы данных
+или использует локаль пользователя по умолчанию.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.language_middleware.ACLMiddleware.get_user_locale">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_locale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/language_middleware.html#ACLMiddleware.get_user_locale"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.language_middleware.ACLMiddleware.get_user_locale" title="Link to this definition">¶</a></dt>
+<dd><p>Определяет локаль пользователя.</p>
+<p>Параметры:
+- action: Тип действия (например, „message“, „callback_query“ и т.д.).
+- args: Аргументы, переданные вместе с действием.</p>
+<p>Возвращает:
+- Строку с кодом языка для текущего пользователя или его локаль по умолчанию.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.language_middleware.get_lang">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">middlewares.language_middleware.</span></span><span class="sig-name descname"><span class="pre">get_lang</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/language_middleware.html#get_lang"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.language_middleware.get_lang" title="Link to this definition">¶</a></dt>
+<dd><p>Получает предпочитаемый язык пользователя из базы данных.</p>
+<p>Параметры:
+- user_id (int): Уникальный идентификатор пользователя.</p>
+<p>Возвращает:
+- Строку с кодом языка, если язык найден, иначе None.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.language_middleware.setup_lang_middleware">
+<span class="sig-prename descclassname"><span class="pre">middlewares.language_middleware.</span></span><span class="sig-name descname"><span class="pre">setup_lang_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/language_middleware.html#setup_lang_middleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.language_middleware.setup_lang_middleware" title="Link to this definition">¶</a></dt>
+<dd><p>Инициализирует и регистрирует промежуточное программное обеспечение для локализации.</p>
+<p>Параметры:
+- dp (Dispatcher): Диспетчер Aiogram, к которому будет привязано middleware.</p>
+<p>Возвращает:
+- Экземпляр ACLMiddleware, используемый для локализации.</p>
+</dd></dl>
+
+</section>
+<section id="module-middlewares.throttling_middleware">
+<span id="middlewares-throttling-middleware-module"></span><h2>middlewares.throttling_middleware module<a class="headerlink" href="#module-middlewares.throttling_middleware" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.ThrottlingMiddleware">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">middlewares.throttling_middleware.</span></span><span class="sig-name descname"><span class="pre">ThrottlingMiddleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'antiflood_'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#ThrottlingMiddleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.ThrottlingMiddleware" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMiddleware</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.ThrottlingMiddleware.message_throttled">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message_throttled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">throttled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Throttled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#ThrottlingMiddleware.message_throttled"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.ThrottlingMiddleware.message_throttled" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.ThrottlingMiddleware.on_process_callback_query">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_process_callback_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#ThrottlingMiddleware.on_process_callback_query"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.ThrottlingMiddleware.on_process_callback_query" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.ThrottlingMiddleware.on_process_message">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_process_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#ThrottlingMiddleware.on_process_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.ThrottlingMiddleware.on_process_message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.rate_limit">
+<span class="sig-prename descclassname"><span class="pre">middlewares.throttling_middleware.</span></span><span class="sig-name descname"><span class="pre">rate_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#rate_limit"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.rate_limit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.setup_throttling_middleware">
+<span class="sig-prename descclassname"><span class="pre">middlewares.throttling_middleware.</span></span><span class="sig-name descname"><span class="pre">setup_throttling_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dispatcher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#setup_throttling_middleware"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.setup_throttling_middleware" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="middlewares.throttling_middleware.setup_throttling_middlewares">
+<span class="sig-prename descclassname"><span class="pre">middlewares.throttling_middleware.</span></span><span class="sig-name descname"><span class="pre">setup_throttling_middlewares</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dispatcher</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/middlewares/throttling_middleware.html#setup_throttling_middlewares"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#middlewares.throttling_middleware.setup_throttling_middlewares" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="services.html" title="services package"
+             >вперёд</a> |</li>
+        <li class="right" >
+          <a href="messages.html" title="messages package"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">middlewares package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

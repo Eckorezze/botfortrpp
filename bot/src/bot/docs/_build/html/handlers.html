@@ -1,0 +1,655 @@
+
+
+<!doctype html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>handlers package &#8212; документация bot </title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=649a27d8" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css?v=532c1bf3" />
+    
+    <script src="_static/documentation_options.js?v=372fde1a"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=29b1f277"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="keyboards package" href="keyboards.html" />
+    <link rel="prev" title="bot" href="modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="keyboards.html" title="keyboards package"
+             accesskey="N">вперёд</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="bot"
+             accesskey="P">назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="handlers-package">
+<h1>handlers package<a class="headerlink" href="#handlers-package" title="Link to this heading">¶</a></h1>
+<section id="module-handlers.admin">
+<span id="handlers-admin-module"></span><h2>handlers.admin module<a class="headerlink" href="#module-handlers.admin" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.admin">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#admin"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.admin" title="Link to this definition">¶</a></dt>
+<dd><p>Админ-панель бота. Показывает информацию для администраторов в личных сообщениях.
+Выводит количество пользователей и предоставляет интерфейс управления.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – Объект сообщения, который содержит команду.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.answer_feedback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">answer_feedback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#answer_feedback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.answer_feedback" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает и отправляет ответ администратора на сообщение пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Сообщение с ответом.</p></li>
+<li><p><strong>state</strong> – Текущее состояние FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.answer_feedback_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">answer_feedback_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#answer_feedback_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.answer_feedback_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Позволяет администратору ответить на сообщение пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Коллбэк-квери, содержащее запрос на ответ.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.back_to_admin">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">back_to_admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#back_to_admin"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.back_to_admin" title="Link to this definition">¶</a></dt>
+<dd><p>Возвращает администратора к админ-панели.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Коллбэк-квери, сигнализирующее о возвращении.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.control_user">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">control_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#control_user"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.control_user" title="Link to this definition">¶</a></dt>
+<dd><p>Получает и обрабатывает причину блокировки пользователя. Выполняет блокировку.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Сообщение, содержащее причину блокировки.</p></li>
+<li><p><strong>state</strong> – Текущее состояние FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.control_user_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">control_user_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#control_user_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.control_user_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Обработчик команды управления пользователями. Позволяет администратору искать пользователей
+по различным критериям и управлять ими.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Объект коллбэк-квери от кнопки управления пользователями.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.export_users_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">export_users_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#export_users_data"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.export_users_data" title="Link to this definition">¶</a></dt>
+<dd><p>Экспортирует данные всех пользователей в Excel файл и отправляет его администратору.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – Сообщение, инициирующее экспорт данных.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.message_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#message_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.message_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает запрос на разблокировку пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Коллбэк-квери, содержащее информацию для разблокировки пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.search_user_by">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">search_user_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#search_user_by"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.search_user_by" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.send_to_all_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">send_to_all_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#send_to_all_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.send_to_all_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Инициирует процедуру рассылки сообщений всем пользователям. Показывает клавиатуру для ввода сообщения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Объект коллбэк-квери от кнопки рассылки.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.send_to_all_message">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">send_to_all_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#send_to_all_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.send_to_all_message" title="Link to this definition">¶</a></dt>
+<dd><p>Отправляет введённое администратором сообщение всем пользователям бота.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Сообщение от администратора, которое нужно рассылать.</p></li>
+<li><p><strong>state</strong> – Текущее состояние FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.write_message">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">write_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#write_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.write_message" title="Link to this definition">¶</a></dt>
+<dd><p>Отправляет сообщение от имени бота в чат пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Сообщение для отправки.</p></li>
+<li><p><strong>state</strong> – Текущее состояние FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.admin.write_message_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.admin.</span></span><span class="sig-name descname"><span class="pre">write_message_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/admin.html#write_message_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.admin.write_message_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Позволяет администратору написать сообщение от имени бота.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>call</strong> – Коллбэк-квери, содержащее запрос на написание сообщения.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-handlers.entertaiment">
+<span id="handlers-entertaiment-module"></span><h2>handlers.entertaiment module<a class="headerlink" href="#module-handlers.entertaiment" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.entertaiment.entertainment">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.entertaiment.</span></span><span class="sig-name descname"><span class="pre">entertainment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/entertaiment.html#entertainment"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.entertaiment.entertainment" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает команды для броска кубика в Telegram-боте.</p>
+<p>Поддерживает команды «Кубик🎲» и «Dice🎲», позволяя пользователю бросить кубик.
+После броска кубика бот ждет 4 секунды, прежде чем отправить результат броска.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (aiogram.types.Message): Сообщение от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.entertaiment.entertainments_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.entertaiment.</span></span><span class="sig-name descname"><span class="pre">entertainments_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/entertaiment.html#entertainments_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.entertaiment.entertainments_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает сообщения, связанные с разделом развлечений в Telegram-боте.</p>
+<p>Отвечает на сообщения с текстом «🎮Entertainments» или «🎮Развлечения»,
+отправляя приветственное сообщение и клавиатуру развлечений.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>message (aiogram.types.Message): Сообщение от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-handlers.qr_code">
+<span id="handlers-qr-code-module"></span><h2>handlers.qr_code module<a class="headerlink" href="#module-handlers.qr_code" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">GenerateQRCode</span></span><a class="reference internal" href="_modules/handlers/qr_code.html#GenerateQRCode"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.GenerateQRCode" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">StatesGroup</span></code></p>
+<p>Определяет состояния (шаги) для генерации QR-кода.</p>
+<p>Состояния:
+- Ожидание типа ссылки.
+- Ожидание SSID Wi-Fi.
+- Ожидание пароля Wi-Fi.
+- Ожидание цвета переднего плана.
+- Ожидание цвета фона.
+- Ожидание генерации.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_bg_color">
+<span class="sig-name descname"><span class="pre">waiting_for_bg_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_bg_color'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_bg_color" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_fg_color">
+<span class="sig-name descname"><span class="pre">waiting_for_fg_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_fg_color'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_fg_color" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_generate">
+<span class="sig-name descname"><span class="pre">waiting_for_generate</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_generate'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_generate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_link_type">
+<span class="sig-name descname"><span class="pre">waiting_for_link_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_link_type'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_link_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_wifi_password">
+<span class="sig-name descname"><span class="pre">waiting_for_wifi_password</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_wifi_password'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_wifi_password" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.qr_code.GenerateQRCode.waiting_for_wifi_ssid">
+<span class="sig-name descname"><span class="pre">waiting_for_wifi_ssid</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GenerateQRCode:waiting_for_wifi_ssid'&gt;</span></em><a class="headerlink" href="#handlers.qr_code.GenerateQRCode.waiting_for_wifi_ssid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.bg_color">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">bg_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#bg_color"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.bg_color" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает цвет фона для QR-кода после выбора цвета переднего плана.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>call: CallbackQuery от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.fg_color">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">fg_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#fg_color"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.fg_color" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает цвет переднего плана для QR-кода.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.get_url_type">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">get_url_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#get_url_type"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.get_url_type" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает у пользователя тип QR-кода.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.menu_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">menu_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#menu_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.menu_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает возврат в меню из любого состояния генерации QR-кода.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.process_link_type">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">process_link_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#process_link_type"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.process_link_type" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает выбор типа QR-кода пользователя.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.process_wifi_password">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">process_wifi_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#process_wifi_password"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.process_wifi_password" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает пароль Wi-Fi для генерации Wi-Fi QR-кода.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.process_wifi_ssid">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">process_wifi_ssid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#process_wifi_ssid"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.process_wifi_ssid" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает SSID Wi-Fi для генерации Wi-Fi QR-кода.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>message: Сообщение от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.qr_code.qenerate_qr">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.qr_code.</span></span><span class="sig-name descname"><span class="pre">qenerate_qr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/qr_code.html#qenerate_qr"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.qr_code.qenerate_qr" title="Link to this definition">¶</a></dt>
+<dd><p>Генерирует и отправляет QR-код на основе выбранных пользователем параметров.</p>
+<dl class="simple">
+<dt>Аргументы:</dt><dd><p>call: CallbackQuery от пользователя.
+state: Состояние конечного автомата.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-handlers.random_gen">
+<span id="handlers-random-gen-module"></span><h2>handlers.random_gen module<a class="headerlink" href="#module-handlers.random_gen" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.random_gen.GeneratePass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.random_gen.</span></span><span class="sig-name descname"><span class="pre">GeneratePass</span></span><a class="reference internal" href="_modules/handlers/random_gen.html#GeneratePass"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.random_gen.GeneratePass" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">StatesGroup</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.random_gen.GeneratePass.num_length">
+<span class="sig-name descname"><span class="pre">num_length</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GeneratePass:num_length'&gt;</span></em><a class="headerlink" href="#handlers.random_gen.GeneratePass.num_length" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.random_gen.GeneratePass.pass_len">
+<span class="sig-name descname"><span class="pre">pass_len</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'GeneratePass:pass_len'&gt;</span></em><a class="headerlink" href="#handlers.random_gen.GeneratePass.pass_len" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.random_gen.generate_num">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.random_gen.</span></span><span class="sig-name descname"><span class="pre">generate_num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/random_gen.html#generate_num"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.random_gen.generate_num" title="Link to this definition">¶</a></dt>
+<dd><p>Генерирует случайное число в указанном пользователем диапазоне.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Объект сообщения от пользователя.</p></li>
+<li><p><strong>state</strong> – Состояние в контексте FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.random_gen.generate_password">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.random_gen.</span></span><span class="sig-name descname"><span class="pre">generate_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/random_gen.html#generate_password"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.random_gen.generate_password" title="Link to this definition">¶</a></dt>
+<dd><p>Генерирует пароль указанной длины.</p>
+<p>Проверяет введённую длину и генерирует пароль, если введено корректное значение.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – Объект сообщения от пользователя.</p></li>
+<li><p><strong>state</strong> – Состояние в контексте FSM.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.random_gen.password_generator_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.random_gen.</span></span><span class="sig-name descname"><span class="pre">password_generator_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/random_gen.html#password_generator_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.random_gen.password_generator_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обработчик команды генерации пароля.</p>
+<p>Посылает пользователю запрос на ввод длины пароля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – Объект сообщения от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.random_gen.random_num_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.random_gen.</span></span><span class="sig-name descname"><span class="pre">random_num_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/random_gen.html#random_num_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.random_gen.random_num_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обработчик команды генерации случайного числа.</p>
+<p>Посылает пользователю запрос на ввод диапазона чисел.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – Объект сообщения от пользователя.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-handlers.tasks">
+<span id="handlers-tasks-module"></span><h2>handlers.tasks module<a class="headerlink" href="#module-handlers.tasks" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.tasks.Notes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">Notes</span></span><a class="reference internal" href="_modules/handlers/tasks.html#Notes"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.Notes" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">StatesGroup</span></code></p>
+<p>Определяет состояния для работы с заметками.</p>
+<p>Состояния:
+- add_note: Состояние для добавления новой заметки.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.tasks.Notes.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'Notes:add_note'&gt;</span></em><a class="headerlink" href="#handlers.tasks.Notes.add_note" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.add_note_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">add_note_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#add_note_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.add_note_callback" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.add_note_message">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">add_note_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#add_note_message"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.add_note_message" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает сообщение от пользователя при добавлении новой заметки.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с текстом заметки.
+- state (FSMContext): Контекст конечного автомата для управления состояниями.</p>
+<p>Добавляет новую заметку в базу данных и отправляет пользователю уведомление об успешном добавлении.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.back_to_list_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">back_to_list_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#back_to_list_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.back_to_list_callback" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.delete_note_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">delete_note_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#delete_note_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.delete_note_callback" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.list_notes">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">list_notes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#list_notes"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.list_notes" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает команду для просмотра списка заметок.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с запросом на просмотр заметок.</p>
+<p>Отвечает пользователю приветствием и вызывает функцию для отображения списка его заметок.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.manage_note_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">manage_note_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#manage_note_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.manage_note_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает нажатие на кнопку управления заметкой.</p>
+<p>Аргументы:
+- call (types.CallbackQuery): Callback запрос от кнопки управления заметкой.</p>
+<p>В зависимости от выбора пользователя, может удалить заметку или вернуться к списку заметок.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.tasks.return_notes">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.tasks.</span></span><span class="sig-name descname"><span class="pre">return_notes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/tasks.html#return_notes"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.tasks.return_notes" title="Link to this definition">¶</a></dt>
+<dd><p>Отправляет пользователю список его заметок.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя.
+- user_id (int): Уникальный идентификатор пользователя.</p>
+<p>Если у пользователя есть заметки, отправляет их список вместе с кнопками управления.
+В противном случае сообщает, что заметок нет, предлагая добавить новую.</p>
+</dd></dl>
+
+</section>
+<section id="module-handlers.users">
+<span id="handlers-users-module"></span><h2>handlers.users module<a class="headerlink" href="#module-handlers.users" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.change_lang">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">change_lang</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#change_lang"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.change_lang" title="Link to this definition">¶</a></dt>
+<dd><p>Предлагает пользователю выбрать язык интерфейса.</p>
+<p>После команды /language выводит клавиатуру с доступными языками.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с командой смены языка.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.feedback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">feedback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#feedback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.feedback" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает сообщение обратной связи от пользователя.</p>
+<p>Отправляет сообщение администратору и информирует пользователя о доставке.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение обратной связи от пользователя.
+- state (FSMContext): Состояние диалога с пользователем.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.feedback_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">feedback_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#feedback_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.feedback_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Инициирует процесс отправки обратной связи.</p>
+<p>Удаляет предыдущее сообщение и приглашает пользователя ввести своё сообщение для обратной связи.</p>
+<p>Аргументы:
+- call (types.CallbackQuery): Callback-запрос на отправку обратной связи.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.info_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">info_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#info_handler"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.info_handler" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает запрос информации о боте.</p>
+<p>Отправляет пользователю информационное сообщение с описанием функционала бота.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с запросом информации.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.language_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">language_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CallbackQuery</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#language_callback"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.language_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает выбор языка пользователя.</p>
+<p>Сохраняет выбранный пользователем язык в базе данных и отправляет подтверждение.</p>
+<p>Аргументы:
+- call (types.CallbackQuery): Callback-запрос от пользователя с выбором языка.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.users.send_welcome">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.users.</span></span><span class="sig-name descname"><span class="pre">send_welcome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/users.html#send_welcome"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.users.send_welcome" title="Link to this definition">¶</a></dt>
+<dd><p>Отправляет приветственное сообщение новым пользователям или выводит главное меню.</p>
+<p>Эта функция вызывается при получении команды /start или при выборе пункта меню «Меню».
+Добавляет пользователя в базу данных, если он там отсутствует, и отправляет приветственное сообщение.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя.</p>
+</dd></dl>
+
+</section>
+<section id="module-handlers.weather">
+<span id="handlers-weather-module"></span><h2>handlers.weather module<a class="headerlink" href="#module-handlers.weather" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="handlers.weather.Weather">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.weather.</span></span><span class="sig-name descname"><span class="pre">Weather</span></span><a class="reference internal" href="_modules/handlers/weather.html#Weather"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.weather.Weather" title="Link to this definition">¶</a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">StatesGroup</span></code></p>
+<p>Определяет состояния для получения погоды или прогноза.</p>
+<p>Состояния:
+- get_location: Состояние для получения местоположения пользователя.
+- weather_or_forecast: Состояние для выбора между текущей погодой и прогнозом.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.weather.Weather.get_location">
+<span class="sig-name descname"><span class="pre">get_location</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'Weather:get_location'&gt;</span></em><a class="headerlink" href="#handlers.weather.Weather.get_location" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="handlers.weather.Weather.weather_or_forecast">
+<span class="sig-name descname"><span class="pre">weather_or_forecast</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;State</span> <span class="pre">'Weather:weather_or_forecast'&gt;</span></em><a class="headerlink" href="#handlers.weather.Weather.weather_or_forecast" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.weather.get_url_type">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.weather.</span></span><span class="sig-name descname"><span class="pre">get_url_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/weather.html#get_url_type"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.weather.get_url_type" title="Link to this definition">¶</a></dt>
+<dd><p>Запрашивает местоположение пользователя для предоставления погоды.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.weather.send_location">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.weather.</span></span><span class="sig-name descname"><span class="pre">send_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/weather.html#send_location"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.weather.send_location" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает получение местоположения от пользователя.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с местоположением.
+- state (FSMContext): Контекст состояния для хранения информации между шагами.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="handlers.weather.send_weather">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">handlers.weather.</span></span><span class="sig-name descname"><span class="pre">send_weather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FSMContext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/handlers/weather.html#send_weather"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#handlers.weather.send_weather" title="Link to this definition">¶</a></dt>
+<dd><p>Обрабатывает выбор пользователя между получением текущей погоды или прогноза.</p>
+<p>Использует OpenWeatherMap API для получения данных и отправляет их пользователю.</p>
+<p>Аргументы:
+- message (types.Message): Сообщение от пользователя с выбором типа погоды.
+- state (FSMContext): Контекст состояния с сохраненным местоположением пользователя.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="right" >
+          <a href="keyboards.html" title="keyboards package"
+             >вперёд</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="bot"
+             >назад</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">документация bot </a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >bot</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">handlers package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Авторские права 2024, Alexander Soloby.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
