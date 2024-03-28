@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 import config
-import keyboards as kb
+from keyboards import keyboards as kb
 from main import dp, bot, _, update_info
 from messages import bot_messages as bm
 from middlewares.throttling_middleware import rate_limit

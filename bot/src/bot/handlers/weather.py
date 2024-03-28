@@ -8,7 +8,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from handlers import users as hu
-import keyboards as kb
+from keyboards import keyboards as kb
 from main import dp, bot, _
 from middlewares.throttling_middleware import rate_limit
 from services import DataBase

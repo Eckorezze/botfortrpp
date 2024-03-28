@@ -10,7 +10,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 
 import config
-import keyboards as kb
+from keyboards import keyboards as kb
 from main import dp, bot, _
 from messages import bot_messages as bm
 from middlewares.throttling_middleware import rate_limit

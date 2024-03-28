@@ -9,7 +9,7 @@ from middlewares.throttling_middleware import rate_limit
 from segno import helpers
 
 from handlers import users as hu
-import keyboards as kb
+from keyboards import keyboards as kb
 from main import dp, bot, _
 
 
@@ -134,7 +134,7 @@ async def fg_color(message: types.Message, state: FSMContext):
         return
     url = message.text
     await message.answer(_("Select the color of the QR code\."), reply_markup=kb.return_color_keyboard())
-    await GenerateQRCode.waiting_for_bg_color.set()
+    await GenerateQRCode.waiting_for_fg_color.set()
     await state.update_data(url=url)
 
 @dp.message_handler(state=[GenerateQRCode.waiting_for_bg_color, GenerateQRCode.waiting_for_generate])
@@ -165,10 +165,10 @@ async def bg_color(call: types.CallbackQuery, state: FSMContext):
         state: Состояние конечного автомата.
     """
     
-    fg_color = call.data.split('_')[1]
+    bg_color = call.data.split('_')[1]
     await call.message.edit_text(_("Now choose a background color."), reply_markup=kb.return_color_keyboard())
     await GenerateQRCode.waiting_for_generate.set()
-    await state.update_data(fg_color=fg_color)
+    await state.update_data(bg_color=bg_color)
 
 
 @dp.callback_query_handler(lambda call: call.data.startswith('color_'), state=GenerateQRCode.waiting_for_generate)

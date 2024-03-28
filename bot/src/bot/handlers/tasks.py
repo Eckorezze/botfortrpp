@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-import keyboards as kb
+from keyboards import keyboards as kb
 from main import bot, dp, _
 from middlewares.throttling_middleware import rate_limit
 from services import DataBase
